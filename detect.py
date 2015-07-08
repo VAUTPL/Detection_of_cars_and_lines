@@ -142,6 +142,11 @@ while True:
     # Filter
     #                                 (src, d, sigmaColor, sigmaSpace[, dst[, borderType]])
     grayFiltered = cv2.bilateralFilter(gray, 5, 50, 50)
+    # Gausian Filter
+    grayFiltered = cv2.GaussianBlur(grayFiltered, (5, 5), 3)
+
+    # Apply Histogram
+    grayFiltered = cv2.equalizeHist(grayFiltered)
 
     # Select Area of Interest
     grayROI = grayFiltered[roiY:roiY+roiHeight, roiX:roiX+roiWidth]  # Prior ROI
@@ -149,7 +154,7 @@ while True:
 
     # Look for Cars in Area of Interest
     #                                      (image[, scaleFactor[, minNeighbors[, flags[, minSize[, maxSize]]]]])
-    carRects = car_cascade.detectMultiScale(grayROI, scaleFactor, minNeighbors)
+    carRects = car_cascade.detectMultiScale(grayROI, scaleFactor, minNeighbors, flags=cv2.cv.CV_HAAR_SCALE_IMAGE)
 
     # Initialize Canny
     #                 image, edges, threshold1, threshold2, aperture_size=3
