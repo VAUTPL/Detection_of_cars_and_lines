@@ -1,7 +1,7 @@
 Detect Cars
 ===========
 
-This project is a master's thesis that consisted of an investigation in the detection of cars and highway lines using Python and the OpenCV API.
+This project is a master's thesis that consisted of an investigation in the detection of cars and highway lines using Python and the OpenCV API. The code is free to be used and modified by anybody who wishes to do so.
 
 System Requirements
 -------------------
@@ -14,7 +14,7 @@ Installation
 ------------
 1. First, one should install the following libraries:
   - OpenCV version 2.4.10+
-  - Python 2.7.9 (or any later Python 2.x) ([See Installation on OS X if using a Mac](#installation-on-os-x))
+  - Python 2.7.9 (or any later Python 2.x) ([See **_Installation on OS X_** if using a Mac](#installation-on-os-x))
   - Numpy 1.9.2+
   - Scipy 0.15.1+
 - Now download and extract this repository with one of several options:
@@ -25,11 +25,11 @@ Installation on OS X
 --------------------
 Apple uses a prior version of Python that does not support the latest Python libraries. One work around is to install Python with Homebrew:
 
-`brew install python`
+`$ brew install python`
 
 Replacing Apple's system Python with an unsupported version may break things. Therefore we linked Homebrew's python into the system path without replacing the system python:
 
-`ln -s /usr/local/Cellar/python/2.x.y/bin/python /bin/hbpython`
+`$ ln -s /usr/local/Cellar/python/2.x.y/bin/python /bin/hbpython`
 
 Where 2.x.y is the version number of your Python.
 
@@ -37,4 +37,12 @@ Running
 -------
 From a command line in the folder of the repository:
 
-`python detect.py [-v path/to/video] [-c path/to/cascade.xml]`
+`$ python detect.py [-v path/to/video] [-c path/to/cascade.xml]`
+
+Or on UNIX, you may add a shebang (`#!`) line to the top of [detect.py](detect.py) with the path to the appropriate Python. Example:
+
+`#! /bin/python` at the top of [detect.py](detect.py)
+
+`$ chmod +x detect.py`
+
+`$ ./detect.py [-v path/to/video] [-c path/to/cascade.xml]`
