@@ -173,7 +173,7 @@ while True:
     cri = 1
     for (fX, fY, fW, fH) in carRects:
         d = dist.func_calc_distance(car_width, focal_len, fW)
-        ratio = d / fY
+        ratio = 1
         if 0.09 <= ratio <= 0.45:
             if avgline_count[9][0] != 0:
                 avgl = avgline[9][0][0] / avgline_count[9][0]
@@ -190,7 +190,7 @@ while True:
                     cv2.putText(frameClone, "fY = %d" % (fY),(fX + fW + roiX + 5, (fY + fH/2 + roiY - 5) + 30), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 3)
                     cv2.rectangle(frameClone, (fX + fW/2 + roiX - 5, fY + fH/2 + roiY - 5), (fX + fW/2 + roiX + 5, fY + fH/2 + roiY + 5), (255,255,0), -2)
                     print "Distance to object %i is %f" % (cri, d)
-                    fcstat.write("%f\t%d\t%f\t%f\n" % (d, fY, fY/d, d/fY))
+                    #fcstat.write("%f\t%d\t%f\t%f\n" % (d, fY, fY/d, d/fY))
                     fcstat.flush()
                     carcnt += 1
             else:
@@ -200,10 +200,10 @@ while True:
                     cv2.putText(frameClone, "fY = %d" % (fY),(fX + fW + roiX + 5, (fY + fH/2 + roiY - 5) + 30), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 3)
                     cv2.rectangle(frameClone, (fX + fW/2 + roiX - 5, fY + fH/2 + roiY - 5), (fX + fW/2 + roiX + 5, fY + fH/2 + roiY + 5), (255,255,0), -2)
                     print "Distance to object %i is %f" % (cri, d)
-                    fcstat.write("%f\t%d\t%f\t%f\n" % (d, fY, fY/d, d/fY))
+                    #fcstat.write("%f\t%d\t%f\t%f\n" % (d, fY, fY/d, d/fY))
                     fcstat.flush()
                     carcnt += 1
-        fstat.write("%f\t%d\t%f\t%f\n" % (d, fY, fY/d, d/fY))
+        #fstat.write("%f\t%d\t%f\t%f\n" % (d, fY, fY/d, d/fY))
         fstat.flush()
         cri += 1
 

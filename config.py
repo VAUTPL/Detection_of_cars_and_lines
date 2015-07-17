@@ -18,7 +18,7 @@ red = (0, 0, 255)
 white = (255, 255, 255)
 
 # Default Values:
-car_default = "cascades/car.xml"
+car_default = "cascades/haarcascade_cars3.xml"
 plate_default = "cascades/plates.xml"
 scaleFactor_default = 1.05
 minNeighbors_default = 2  # old : 7
