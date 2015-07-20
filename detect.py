@@ -391,7 +391,7 @@ while True:
                     pt2 = pti
                 else:
                     # Should never ever ever enter this condition
-                    print "GRAVE ERROR, NON-EXISTENT POINT, POS 367"
+                    print "GRAVE ERROR, NON-EXISTENT POINT, POS 394"
                     break
                 crop_lines.append([pt1, pt2])
             # print "PTI Cropped Lines: %s" % (str(crop_lines))
