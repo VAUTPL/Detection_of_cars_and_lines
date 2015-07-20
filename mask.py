@@ -1,5 +1,4 @@
 #!/bin/hbpython
-#UNIFIED
 __author__ = 'utpl'
 
 import cv2

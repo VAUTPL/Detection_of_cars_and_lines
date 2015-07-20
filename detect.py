@@ -1,20 +1,22 @@
 #!/bin/hbpython
-# UNIDO
+#nicho
 # coding=utf-8
 __author__ = 'utpl'
 
-#Libreria de direccion de argumentos
+# Argument Management Library
 import argparse
-# Libreria de vision artificial
+# Artificial Vision Library
 import cv2
-
-# liberia para manipulacion de imagenes
+# import cv
+# Numpy Math Libraries (imported in config, no longer necessary here)
+# import numpy as np
+# Library for Image Manipulation
 from pyimagesearch import imutils
-# librerias para control de frames
+# Library for Frame Timing
 import time
-# Importacion de valores por defecto
+# Import Default Values and Constants
 from config import *
-# Importacion libreria de distancias
+# Import My Distance Library
 import distance as dist
 # Import My Mask Library
 # import mask as msk
@@ -22,8 +24,6 @@ import distance as dist
 # import video as vid
 # Import My library for sanitizing data
 import sanitize as san
-# Import my Filter Functions Library:
-import filters
 
 # Manage Arguments
 ap = argparse.ArgumentParser()
@@ -46,6 +46,7 @@ ap.add_argument("-T", "--threshold", help="Hough Threshold -- default is %d" % t
 ap.add_argument("-D", "--delay", help="Delay for operating system to sleep between frames -- default is %f"
                                       % frameDelay_default)
 args = vars(ap.parse_args())
+# print args.keys()
 
 # Set defaults for Arguments not provided
 car = args['car'] if args['car'] is not None else car_default
@@ -65,6 +66,9 @@ theta = args['theta'] * RADIANS if args['theta'] is not None else theta_default
 threshold = args['threshold'] if args['threshold'] is not None else threshold_default
 frameDelay = float(args['delay']) if args['delay'] is not None else frameDelay_default
 
+# scaleFactor = scaleFactor_default
+# minNeighbors = minNeighbors_default
+
 # Initialize Cascade
 car_cascade = cv2.CascadeClassifier(car)
 
@@ -82,7 +86,14 @@ focal_len = focal_len if focal_len is not None else dist.cfg_cam()
 
 print "------------------------------------------------BEGIN------------------------------------------------"
 
+# Video Size Diagnostics
+# (grabbed, frame) = camera.read()
+# print frame.shape
+
 frame = imutils.resize(frame, width=800)
+
+# Init Video
+# vid.vid_init(frame.shape[1], frame.shape[0])
 
 roiY_old = roiY
 roiX_old = roiX
@@ -98,6 +109,17 @@ print frame.shape
 # Frame Selector
 frame_num = 0
 
+# (grabbed, frame) = camera.read()
+# TODO: Get right shape on mask
+# RoadMSK = msk.mkmask(roiWidth, roiHeight, np.array([[(230, 10), (270, 10), (300, 131), (200, 131)]], dtype=np.int32))
+# RoadMSK = msk.mkmask(roiWidth, roiHeight, np.array([[(100, 10), (400, 10), (450, 131), (50, 131)]], dtype=np.int32))
+# RoadMSK = msk.mkmask(roiWidth, roiHeight, np.array([[(150, 10), (350, 10), (450, 131), (50, 131)]], dtype=np.int32))
+# 500 px Width
+# RoadMSK = msk.mkmask(roiWidth, roiHeight, np.array([[(110, 10), (390, 10), (490, 131), (10, 131)]], dtype=np.int32))
+# 800 px Width
+# RoadMSK = msk.mkmask(roiWidth, roiHeight, np.array([[(176, 16), (624, 16), (784, 210), (16, 210)]], dtype=np.int32))
+# cv2.imshow("Mask", RoadMSK)
+
 min_def = 100000000
 max_def = -100000000
 min = min_def
@@ -111,9 +133,6 @@ avgline = [[[0.0, 0.0], [0.0, 0.0]], [[0.0, 0.0], [0.0, 0.0]], [[0.0, 0.0], [0.0
            [[0.0, 0.0], [0.0, 0.0]], [[0.0, 0.0], [0.0, 0.0]], [[0.0, 0.0], [0.0, 0.0]],
            [[0.0, 0.0], [0.0, 0.0]]]
 avgline_count = [[0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0]]
-
-fstat = open("a_stat.tsv", 'w')
-fcstat = open("c_stat.tsv", 'w')
 
 # Main Program Loop
 while True:
@@ -136,25 +155,50 @@ while True:
     # Resize Frame
     frame = imutils.resize(frame, width=800)
 
+    # Get size of resized frame
+    # print frame.shape
+
     # Convert Frame to Grayscale
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    # gray = frame
+    # cv2.imshow("Car Detection - Grey", gray)
 
     # Filter
     #                                 (src, d, sigmaColor, sigmaSpace[, dst[, borderType]])
     grayFiltered = cv2.bilateralFilter(gray, 5, 50, 50)
-    # Gausian Filter
     grayFiltered = cv2.GaussianBlur(grayFiltered, (5, 5), 3)
 
     # Apply Histogram
     grayFiltered = cv2.equalizeHist(grayFiltered)
+    #                                         (src, ksize, sigmaSpace[, dst[, maxSigmaColor[, anchor[, borderType]]]])
+    # grayFiltered = cv2.adaptiveBilateralFilter(gray, 5, 80, 5) # Need Param Example
+    # cv2.imshow("Car Detection - Grey Filtered", grayFiltered)
 
     # Select Area of Interest
+    # grayROI = cv.SetImageROI(gray, (roiX, roiY, roiWidth, roiHeight))
     grayROI = grayFiltered[roiY:roiY+roiHeight, roiX:roiX+roiWidth]  # Prior ROI
+    # print grayROI.shape
+    # preMaskGrayROI = grayFiltered[roiY:roiY+roiHeight, roiX:roiX+roiWidth]
     GrayROI = grayFiltered[roiY:roiY+roiHeight, roiX:roiX+roiWidth]
+    # grayROI = msk.applymask(preMaskGrayROI, RoadMSK)
+    # print "----------Begin----------"
+    # print preMaskGrayROI.shape
+    # print RoadMSK.shape
+    # print "-----------End-----------"
+    # frameROI = frame[roiY:roiY+roiHeight, roiX:roiX+roiWidth]
+
+    # Mask out Unwanted Pixels (Causes Major Slowdown)
+    '''
+    for irow, row in enumerate(grayROI):
+        for icol, pixel in enumerate(row):
+            # pixel = 255 if pixel > 150 else 0
+            grayROI[irow, icol] = 255 if pixel > 150 else 0
+            # print grayROI[irow, icol], ' = ', pixel
+    # '''
 
     # Look for Cars in Area of Interest
     #                                      (image[, scaleFactor[, minNeighbors[, flags[, minSize[, maxSize]]]]])
-    carRects = car_cascade.detectMultiScale(grayROI, scaleFactor, minNeighbors, flags=cv2.cv.CV_HAAR_SCALE_IMAGE)
+    carRects = car_cascade.detectMultiScale(grayROI, scaleFactor, minNeighbors)
 
     # Initialize Canny
     #                 image, edges, threshold1, threshold2, aperture_size=3
@@ -164,6 +208,9 @@ while True:
     # Detect Lines
     #                      (image, rho, theta, threshold[, lines[, minLineLength[, maxLineGap]]])
     lines2 = cv2.HoughLinesP(edges, rho, theta, threshold, minLineLength, maxLineGap)
+    # This Line causes failure (OpenCV side):
+    #                     (image, rho, theta, threshold[, lines[, srn[, stn]]])
+    # lines = cv2.HoughLines(edges, 1, np.pi/180, 100, minLineLength, maxLineGap)
     lines = cv2.HoughLines(edges, rho, theta, threshold)
 
     # Make a copy of the current frame
@@ -172,39 +219,11 @@ while True:
     # Draw each car rectangle on frame copy
     cri = 1
     for (fX, fY, fW, fH) in carRects:
-        d = dist.func_calc_distance(car_width, focal_len, fW)
-        ratio = 1
-        if 0.09 <= ratio <= 0.45:
-            if avgline_count[9][0] != 0:
-                avgl = avgline[9][0][0] / avgline_count[9][0]
-                a = np.cos(t)
-                b = np.sin(t)
-                ang = np.tan(t + RADIAN_90) / RADIANS
-                x0 = a*r
-                y0 = b*r
-                pt1 = (int(x0 + 1000*(-b) + roiX), int(y0 + 1000*a + roiY))
-                pt2 = (int(x0 - 1000*(-b) + roiX), int(y0 - 1000*a + roiY))
-                if filters.isBelow((fX, fY, fW, fH), pt1, pt2):
-                    cv2.rectangle(frameClone, (fX + roiX, fY + roiY), (fX + fW + roiX, fY + fH + roiY), green, 2)
-                    cv2.putText(frameClone, "%.1f M" % (d),(fX + fW + roiX + 5, fY + fH/2 + roiY - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 3)
-                    cv2.putText(frameClone, "fY = %d" % (fY),(fX + fW + roiX + 5, (fY + fH/2 + roiY - 5) + 30), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 3)
-                    cv2.rectangle(frameClone, (fX + fW/2 + roiX - 5, fY + fH/2 + roiY - 5), (fX + fW/2 + roiX + 5, fY + fH/2 + roiY + 5), (255,255,0), -2)
-                    print "Distance to object %i is %f" % (cri, d)
-                    #fcstat.write("%f\t%d\t%f\t%f\n" % (d, fY, fY/d, d/fY))
-                    fcstat.flush()
-                    carcnt += 1
-            else:
-                if True: # filters.isBelow((fX, fY, fW, fH), pt1, pt2):
-                    cv2.rectangle(frameClone, (fX + roiX, fY + roiY), (fX + fW + roiX, fY + fH + roiY), green, 2)
-                    cv2.putText(frameClone, "%.1f M" % (d),(fX + fW + roiX + 5, fY + fH/2 + roiY - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 3)
-                    cv2.putText(frameClone, "fY = %d" % (fY),(fX + fW + roiX + 5, (fY + fH/2 + roiY - 5) + 30), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 3)
-                    cv2.rectangle(frameClone, (fX + fW/2 + roiX - 5, fY + fH/2 + roiY - 5), (fX + fW/2 + roiX + 5, fY + fH/2 + roiY + 5), (255,255,0), -2)
-                    print "Distance to object %i is %f" % (cri, d)
-                    #fcstat.write("%f\t%d\t%f\t%f\n" % (d, fY, fY/d, d/fY))
-                    fcstat.flush()
-                    carcnt += 1
-        #fstat.write("%f\t%d\t%f\t%f\n" % (d, fY, fY/d, d/fY))
-        fstat.flush()
+        cv2.rectangle(frameClone, (fX + roiX, fY + roiY), (fX + fW + roiX, fY + fH + roiY), green, 2)
+        d=dist.func_calc_distance(car_width, focal_len, fW)
+        cv2.putText(frameClone, "%.1f M" % (d),(fX + fW + roiX + 5, fY + fH/2 + roiY - 5), cv2.FONT_HERSHEY_SIMPLEX,0.9, (0, 255, 0), 3)
+        cv2.rectangle(frameClone, (fX + fW/2 + roiX - 5, fY + fH/2 + roiY - 5), (fX + fW/2 + roiX + 5, fY + fH/2 + roiY + 5), (255,255,0), -2)    
+        print "Distance to object %i is %f" % (cri, d) 
         cri += 1
 
     # Draw each line on frame copy
@@ -215,8 +234,8 @@ while True:
         avgline[0] = [[0.0, 0.0], [0.0, 0.0]]
         avgline_count[0] = [0, 0]
         for line in lines:
-            # Display HoughLines
-            # New Form with angles
+            # ''' Display HoughLines
+            # ''' New Form with angles
             for r, t in line:
                 a = np.cos(t)
                 b = np.sin(t)
@@ -227,11 +246,35 @@ while True:
                 pt2 = (int(x0 - 1000*(-b) + roiX), int(y0 - 1000*a + roiY))
                 delx = pt1[0] - pt2[0]
                 if True:
+                    # if -75 <= ang <= -105 or 135 <= ang <= 75:
+                    '''
+                    if delx == 0:
+                        # m = 100000
+                        print "HLO (x1, y1) = (%i, %i) (x2, y2) = (%i, %i) m = %f angle = %f"\
+                              % (pt1[0], pt2[0], pt1[1], pt2[1], m, ang)
+                        #print int(ang)
+                        old_ang = ang
+                        ang %= 360
+                        if old_ang < 0:
+                            ang *= -1
+                        min = ang if ang < min else min
+                        max = ang if ang > max else max
+                        avg += ang
+                        cnt += 1
+                    else:
+                    '''
                     if delx != 0:
                         m = (float(pt1[1] - pt2[1]) / float(delx))
                         if m < -0.5 or m > 0.5:
+                            # if True:
                             print "HLO (x1, y1) = (%i, %i) (x2, y2) = (%i, %i) m = %f angle = %f"\
                                   % (pt1[0], pt2[0], pt1[1], pt2[1], m, ang)
+                            # print int(ang)
+                            # cv2.line(frameClone, (x1 + roiX, y1 + roiY), (x2 + roiX, y2 + roiY), blue, 1)
+                            # Draw all Lines:
+                            # cv2.line(frameClone, pt1, pt2, blue, 1)
+                            # cv2.line(frameClone, pt1, pt2, white, 1)
+                            # Calculate Avg Line:
                             if m < 0:
                                 for i in range(10):
                                     avgline[i][1][0] += r
@@ -241,6 +284,8 @@ while True:
                                 for i in range(10):
                                     avgline[i][0][0] += r
                                     avgline[i][0][1] += t
+                                    # print "h"
+                                    # print type(avgline_count[i][0])
                                     avgline_count[i][0] += 1
                             old_ang = ang
                             ang %= 360
@@ -250,6 +295,7 @@ while True:
                             max = ang if ang > max else max
                             avg += ang
                             cnt += 1
+            # '''
         if avgline_count[9][0] != 0:
             avgline[9][0][0] /= avgline_count[9][0]
             avgline[9][0][1] /= avgline_count[9][0]
@@ -257,14 +303,16 @@ while True:
             avgline[9][1][0] /= avgline_count[9][1]
             avgline[9][1][1] /= avgline_count[9][1]
         tmp_lines = []
-        # Draw Lines up to intersection or roi, which ever has less y
+        # TODO: Draw Lines up to intersection or roi, which ever has less y
         for avgl in avgline[9]:
-            # Display HoughLines
-            # New Form with angles
+            # ''' Display HoughLines
+            # ''' New Form with angles
             r = avgl[0]
             t = avgl[1]
+            # for r, t in avgl:
             a = np.cos(t)
             b = np.sin(t)
+            # print type(t)
             ang = np.tan(t + RADIAN_90) / RADIANS
             x0 = a*r
             y0 = b*r
@@ -276,11 +324,18 @@ while True:
                 print "HLO AVG (x1, y1) = (%i, %i) (x2, y2) = (%i, %i) m = %f angle = %f"\
                       % (pt1[0], pt1[1], pt2[0], pt2[1], m, ang)
                 tmp_lines.append([pt1, pt2, m, ang])
+                # print int(ang)
+                # Draw all Lines:
+                # cv2.line(frameClone, pt1, pt2, blue, 1)
+                # cv2.line(frameClone, pt1, pt2, blue, 5)
+                # cv2.line(frameClone, pt1, pt2, red, 5)
             else:
                 m = 10000
         max_y = roiY
         pti = None
-        # Cut Lines to Point of intersection
+        # print "Need to Crop Lines..."
+        # if len(tmp_lines) == 2:
+        # TODO: Cut Lines to Point of intersection
         if len(tmp_lines) == 2:
             # data format:
             # tmp_lines[0] = line1
@@ -304,12 +359,23 @@ while True:
             # ----- CALCULATIONS ----- #
             # general form: y = mx + b
             # b = -1 * (mx - y)
+            # print "2 Lines: Finding Intersection..."
             b1 = -1 * ((tmp_lines[0][2] * tmp_lines[0][0][0]) - tmp_lines[0][0][1])
             b2 = -1 * ((tmp_lines[1][2] * tmp_lines[1][0][0]) - tmp_lines[1][0][1])
+            # line1: y = ax + c
+            # line2: y = bx + d
+            # ax + c = bx + d
+            # a = line1_m = tmp_lines[0][2]
+            # b = line2_m = tmp_lines[1][2]
+            # c = b1
+            # d = b2
+            # PoinT of Intersection:
+            # pti = ( ((d - c) / (a - b)), ((ad - bc) / (a - b)) )
             pti = (
                 ((b2 - b1) / (tmp_lines[0][2] - tmp_lines[1][2])),
                 (((tmp_lines[0][2] * b2) - (tmp_lines[1][2] * b1)) / (tmp_lines[0][2] - tmp_lines[1][2]))
             )
+            # print "Intersection at: (%d, %d)" % (pti[0], pti[1])
             if pti[1] > max_y:
                 max_y = pti[1]
         crop_lines = []
@@ -344,42 +410,69 @@ while True:
                     pt1 = tmpl[0]
                 pt2 = (x, y)
                 crop_lines.append([pt1, pt2])
-                
+                # print "ROI Cropped Lines: %s" % (str(crop_lines))
         for cropl in crop_lines:
-            
+            # pt1 = cropl[0][0]
+            # pt2 = cropl[1][0]
             pt1 = cropl[0]
             pt2 = cropl[1]
             print cropl
             print pt1
             print pt2
-            
+            # print "pt1 = (%f, %f), pt2 = (%f, %f)" % (pt1[0], pt1[1], pt2[0], pt2[1])
             cv2.line(frameClone, san.double_tuple_2_int(pt1), san.double_tuple_2_int(pt2), blue, 5)
-           
+            # print "HLO AVG CROP (x1, y1) = (%i, %i) (x2, y2) = (%i, %i) m = %f angle = %f"\
+            #      % (pt1[0], pt1[1], pt2[0], pt2[1], m, ang)
             print "HLO AVG CROP (x1, y1) = (%i, %i) (x2, y2) = (%i, %i) m = %f"\
                   % (pt1[0], pt1[1], pt2[0], pt2[1], ((pt2[1] - pt1[1]) / (pt2[0] - pt1[0])))
     # Second Loop
     if lines2 is not None:
         for line in lines2:
-            
-            # Display HoughLinesP
+            # ' ''
+            # ' '' Display HoughLinesP
             for x1, y1, x2, y2 in line:
                 delta_x = float(x1 - x2)
                 if delta_x == 0:
                     cv2.line(frameClone, (x1 + roiX, y1 + roiY), (x2 + roiX, y2 + roiY), red, 10)
                 else:
                     m = float(y1 - y2) / delta_x
-                   
+                    # Horizontal lines are between -0.5 and 0.5
+                    # if m < -0.75 or m > 0.75:
                     if m < -0.5 or m > 0.5:
-                        
+                        # Line is vertical
+                       # cv2.line(frameClone, (x1 + roiX, y1 + roiY), (x2 + roiX, y2 + roiY), red, 10)
                         print "HLP (x1, y1) = (%i, %i) (x2, y2) = (%i, %i) m = %f"\
                               % (x1 + roiX, y1 + roiY, x2 + roiX, y2 + roiY, m)
-                       
+                        # print "Slope is %f" % m
+            # '''
+        # print lines
 
     # Show the frame copy
     cv2.imshow("Car Detection - Color", frameClone)
 
+    # Save Video as Images
+    # vid.save_frame(frame, frameClone, frame_num)
+    # vid.save_vid_frame(frame, frameClone)
+
+    '''
+    if cnt >= 29:
+        avg /= (cnt + 1)
+        print "AVG: %f, CNT: %d, MAX: %f, MIN: %f" % (avg, cnt + 1, max, min)
+        cnt = 0
+        min = min_def
+        max = max_def
+        avg = 0.0
+    '''
+
     print "--------------------------END FRAME %i--------------------------" % frame_num
     frame_num += 1
+
+    # ''' Pause on Frame Number:
+    if frame_num == 1:
+        while True:
+            if cv2.waitKey(1) & 0xFF == ord("p"):
+                break
+    # '''
 
     key = cv2.waitKey(1) & 0xFF
 
@@ -397,8 +490,6 @@ while True:
 avg /= (cnt + 1)
 print "AVG: %f, CNT: %d, MAX: %f, MIN: %f" % (avg, cnt + 1, max, min)
 print "CARCNT: %d" % carcnt
-fstat.close()
-fcstat.close()
-
+# vid.close_save()
 
 print "-------------------------------------------------END-------------------------------------------------"
