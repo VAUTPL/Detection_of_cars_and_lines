@@ -3,6 +3,15 @@ Detect Cars
 
 This project is a master's thesis that consisted of an investigation in the detection of cars and highway lines using Python and the OpenCV API. The code is free to be used and modified by anybody who wishes to do so.
 
+##UTPL
+###Professor:
+- Rodrigo Barba [lrbarba@utpl.edu.ec](mailto:lrbarba@utpl.edu.ec)
+
+###Students:
+- Marcelo Bravo [mdbravo4@utpl.edu.ec](mdbravo4@utpl.edu.ec)
+- Galo Celly [gscelly@utpl.edu.ec](gscelly@utpl.edu.ec)
+- Nicholas Earley [nearley@utpl.edu.ec](nearley@utpl.edu.ec)
+
 System Requirements
 -------------------
 * An i3 or better processor. The faster the better, especially at high video resolutions.
@@ -57,11 +66,12 @@ If no video is specified, OpenCV attempts to open the Webcam, see line number 73
 in [detect.py](detect.py)
 
 ###Examples:
-**Windows:** `C:\path\to\repository> python detect.py -v data\loja.avi`
+**Windows:** `C:\path\to\repository> python detect.py -v data/Loja.avi`
 
-**UNIX and UNIX-Like:** `$ python detect.py -v data/loja.mov` or `$ ./detect.py -v data/loja.mov`
+**UNIX and UNIX-Like:** `$ python detect.py -v data/Loja.mov` or `$ ./detect.py -v data/Loja.mov`
+* **OR:**  `$ python detect.py -v data/Loja.avi` or `$ ./detect.py -v data/Loja.avi`
 
-**Mac OSX:** `$ hbpython detect.py -v data/loja.mov` or `$ ./detect.py -v data/loja.mov`
+**Mac OSX:** `$ hbpython detect.py -v data/Loja.mov` or `$ ./detect.py -v data/Loja.mov`
 
 ###Other Arguments
 Default values can be found in [config.py](config.py), but can be temporarily overwritten with the following arguments:
