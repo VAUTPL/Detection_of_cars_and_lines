@@ -31,7 +31,7 @@ white = (255, 255, 255)
 
 # Default Values:
 car_default = "cascades/haarcascade_cars3.xml"
-scaleFactor_default = 1.1 # 1.3
+scaleFactor_default = 1.06 # 1.3
 minNeighbors_default = 7  # 5
 ''' Old ROI (500 px width)
 roiX_default = 0
