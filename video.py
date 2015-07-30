@@ -1,3 +1,4 @@
+#Library for saving images and video(video doesn't work)
 __author__ = 'utpl'
 
 import cv2.cv

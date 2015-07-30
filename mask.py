@@ -1,4 +1,5 @@
 #!/bin/hbpython
+#library to mask frames in principal application 
 __author__ = 'utpl'
 
 import cv2

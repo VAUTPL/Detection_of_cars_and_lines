@@ -1,5 +1,5 @@
 #!/bin/hbpython
-#nicho
+#Main application: point of entry
 # coding=utf-8
 __author__ = 'utpl'
 

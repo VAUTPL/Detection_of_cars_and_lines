@@ -1,3 +1,5 @@
+#configuration of main application
+#Consists of important constants in the detection of cars and highway lines
 __author__ = 'utpl'
 
 import numpy as np

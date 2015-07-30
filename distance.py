@@ -1,4 +1,5 @@
 #!/bin/hbpython
+#library to calculate distances to detected objects 
 __author__ = 'utpl'
 
 from config import *
