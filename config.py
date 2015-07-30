@@ -1,3 +1,14 @@
+#############################################
+# Universidad Tecnica Particular de Loja    #
+#############################################
+# Professor:                                #
+# Rodrigo Barba        lrbarba@utpl.edu.ec  #
+#############################################
+# Students:                                 #
+# Marcelo Bravo        mdbravo4@utpl.edu.ec #
+# Galo Celly           gscelly@utpl.edu.ec  #
+# Nicholas Earley      nearley@utpl.edu.ec  #
+#############################################
 #configuration of main application
 #Consists of important constants in the detection of cars and highway lines
 __author__ = 'utpl'

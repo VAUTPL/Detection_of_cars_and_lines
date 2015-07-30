@@ -1,3 +1,14 @@
+#############################################
+# Universidad Tecnica Particular de Loja    #
+#############################################
+# Professor:                                #
+# Rodrigo Barba        lrbarba@utpl.edu.ec  #
+#############################################
+# Students:                                 #
+# Marcelo Bravo        mdbravo4@utpl.edu.ec #
+# Galo Celly           gscelly@utpl.edu.ec  #
+# Nicholas Earley      nearley@utpl.edu.ec  #
+#############################################
 #Library for saving images and video(video doesn't work)
 __author__ = 'utpl'
 

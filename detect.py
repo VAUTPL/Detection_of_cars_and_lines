@@ -1,4 +1,15 @@
 #!/bin/hbpython
+#############################################
+# Universidad Tecnica Particular de Loja    #
+#############################################
+# Professor:                                #
+# Rodrigo Barba        lrbarba@utpl.edu.ec  #
+#############################################
+# Students:                                 #
+# Marcelo Bravo        mdbravo4@utpl.edu.ec #
+# Galo Celly           gscelly@utpl.edu.ec  #
+# Nicholas Earley      nearley@utpl.edu.ec  #
+#############################################
 #Main application: point of entry
 # coding=utf-8
 __author__ = 'utpl'
@@ -222,8 +233,8 @@ while True:
         cv2.rectangle(frameClone, (fX + roiX, fY + roiY), (fX + fW + roiX, fY + fH + roiY), green, 2)
         d=dist.func_calc_distance(car_width, focal_len, fW)
         cv2.putText(frameClone, "%.1f M" % (d),(fX + fW + roiX + 5, fY + fH/2 + roiY - 5), cv2.FONT_HERSHEY_SIMPLEX,0.9, (0, 255, 0), 3)
-        cv2.rectangle(frameClone, (fX + fW/2 + roiX - 5, fY + fH/2 + roiY - 5), (fX + fW/2 + roiX + 5, fY + fH/2 + roiY + 5), (255,255,0), -2)    
-        print "Distance to object %i is %f" % (cri, d) 
+        cv2.rectangle(frameClone, (fX + fW/2 + roiX - 5, fY + fH/2 + roiY - 5), (fX + fW/2 + roiX + 5, fY + fH/2 + roiY + 5), (255,255,0), -2)
+        print "Distance to object %i is %f" % (cri, d)
         cri += 1
 
     # Draw each line on frame copy
@@ -267,8 +278,8 @@ while True:
                         m = (float(pt1[1] - pt2[1]) / float(delx))
                         if m < -0.5 or m > 0.5:
                             # if True:
-                            print "HLO (x1, y1) = (%i, %i) (x2, y2) = (%i, %i) m = %f angle = %f"\
-                                  % (pt1[0], pt2[0], pt1[1], pt2[1], m, ang)
+                            #print "HLO (x1, y1) = (%i, %i) (x2, y2) = (%i, %i) m = %f angle = %f"\
+                            #      % (pt1[0], pt2[0], pt1[1], pt2[1], m, ang)
                             # print int(ang)
                             # cv2.line(frameClone, (x1 + roiX, y1 + roiY), (x2 + roiX, y2 + roiY), blue, 1)
                             # Draw all Lines:
@@ -321,8 +332,8 @@ while True:
             delx = pt1[0] - pt2[0]
             if delx != 0:
                 m = (float(pt1[1] - pt2[1]) / float(delx))
-                print "HLO AVG (x1, y1) = (%i, %i) (x2, y2) = (%i, %i) m = %f angle = %f"\
-                      % (pt1[0], pt1[1], pt2[0], pt2[1], m, ang)
+                #print "HLO AVG (x1, y1) = (%i, %i) (x2, y2) = (%i, %i) m = %f angle = %f"\
+                #      % (pt1[0], pt1[1], pt2[0], pt2[1], m, ang)
                 tmp_lines.append([pt1, pt2, m, ang])
                 # print int(ang)
                 # Draw all Lines:
@@ -381,7 +392,7 @@ while True:
         crop_lines = []
         # if pti is not None and min_y == pti[1]:
         if pti is not None and max_y == pti[1]:
-            print "Cropping Lines to Point of Intersection..."
+           # print "Cropping Lines to Point of Intersection..."
             for tmpl in tmp_lines:
                 if tmpl[0][1] < pti[1]:
                     pt1 = tmpl[1]
@@ -396,7 +407,7 @@ while True:
                 crop_lines.append([pt1, pt2])
             # print "PTI Cropped Lines: %s" % (str(crop_lines))
         else:
-            print "Cropping Lines to ROI..."
+            #print "Cropping Lines to ROI..."
             for tmpl in tmp_lines:
                 # x = ((y - y1) / m) + x1
                 x1 = tmpl[0][0]
@@ -438,11 +449,11 @@ while True:
                     m = float(y1 - y2) / delta_x
                     # Horizontal lines are between -0.5 and 0.5
                     # if m < -0.75 or m > 0.75:
-                    if m < -0.5 or m > 0.5:
+                    #if m < -0.5 or m > 0.5:
                         # Line is vertical
                        # cv2.line(frameClone, (x1 + roiX, y1 + roiY), (x2 + roiX, y2 + roiY), red, 10)
-                        print "HLP (x1, y1) = (%i, %i) (x2, y2) = (%i, %i) m = %f"\
-                              % (x1 + roiX, y1 + roiY, x2 + roiX, y2 + roiY, m)
+                        #print "HLP (x1, y1) = (%i, %i) (x2, y2) = (%i, %i) m = %f"\
+                        #      % (x1 + roiX, y1 + roiY, x2 + roiX, y2 + roiY, m)
                         # print "Slope is %f" % m
             # '''
         # print lines
@@ -467,7 +478,7 @@ while True:
     print "--------------------------END FRAME %i--------------------------" % frame_num
     frame_num += 1
 
-    # ''' Pause on Frame Number:
+    ''' Pause on Frame Number:
     if frame_num == 1:
         while True:
             if cv2.waitKey(1) & 0xFF == ord("p"):
